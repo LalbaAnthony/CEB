@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <title>Le compte est bon</title>
+  <link rel="icon" type="image/x-icon" href="ceb.ico" />
+</head>
+
+<body>
+  <noscript>
+    Cette page a besoin de JavaScript pour fonctionner.
+  </noscript>
+
+  <header>
+    <h2 class="main-title">
+      Le compte est <span class="outline-text">bon</span>
+    </h2>
+  </header>
+
+  <div class="main-block">
+
+    <h5 class="subtitle">
+      Règles
+    </h5>
+
+    <p>
+      Le compte est bon est un jeu mathématique où l'objectif est d'obtenir un nombre cible en utilisant des nombres
+      donnés et des opérations arithmétiques (+, -, x, ÷) avec trois règles clés :
+    </p>
+    <br>
+    <ul class="rules-list">
+      <li>Toutes les étapes doivent être des opérations entières</li>
+      <li>Vous ne pouvez utiliser chaque nombre qu'une seule fois</li>
+      <li>Il faut utiliser tous les nombres fournis</li>
+    </ul>
+
+  </div>
+
+  <div class="main-block">
+
+    <h5 id="score" class="score">
+      25
+    </h5>
+
+  </div>
+
+  <div class="toolbar">
+    <button class="toolbar-button" onclick="reloadPage()">
+      Nouveau
+    </button>
+    <button class="toolbar-button " onclick="resetGuessField()">
+      Réinitialiser
+    </button>
+  </div>
+
+  <div class="main-block">
+
+    <ul class="start-numbers" id="start-numbers">
+    </ul>
+
+    <h5 class="goal" id="goal"></h5>
+
+    <div class="difficulty">
+      <p>Difficulté:&nbsp;</p>
+      <div id="difficulty-cell-1" class="difficulty-cell"></div>
+      <div id="difficulty-cell-2" class="difficulty-cell"></div>
+      <div id="difficulty-cell-3" class="difficulty-cell"></div>
+    </div>
+
+    <div class="guess-form">
+      <input class="guess-field" type="text" id="guess" name="guess" required minlength="7" maxlength="20" />
+      <button class="guess-button" type="submit" onclick="makeAGuess(startNumbers, goal)">Soumettre</button>
+    </div>
+
+    <p class="answer-message" id="answer-message"></p>
+
+  </div>
+
+</body>
+
+</html>
+
+<style>
+  :root {
+    --primary: #698F3F;
+    --dark: #1c1c1c;
+  }
+
+  * {
+    padding: 0;
+    margin: 0;
+  }
+
+  body {
+    background-color: var(--primary);
+    color: white;
+    font-family: "Roboto", sans-serif;
+    padding: 1rem;
+  }
+
+  .main-title {
+    font-size: 3rem;
+    letter-spacing: -3px;
+    padding: 10px;
+    text-align: center;
+    background-color: var(--dark);
+    color: var(--primary);
+    text-transform: uppercase;
+  }
+
+  .outline-text {
+    color: transparent;
+    -webkit-text-stroke: 2px var(--primary);
+  }
+
+  .main-block {
+    margin-top: 30px;
+    margin-bottom: 30px;
+    padding: 2rem;
+    background-color: var(--dark);
+    color: white;
+  }
+
+  .subtitle {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: var(--primary);
+  }
+
+  .score {
+    font-size: 1.5rem;
+    text-align: center;
+    color: white;
+    justify-content: center;
+  }
+
+  .score::before {
+    color: var(--primary);
+    content: "Score: ";
+  }
+
+  .rules-list {
+    margin-left: 15px;
+  }
+
+  .toolbar {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: center;
+  }
+
+  .toolbar-button {
+    font-size: 1rem;
+    border-radius: 2rem;
+    padding: 10px;
+    margin-left: 5px;
+    margin-right: 5px;
+    text-align: center;
+    background-color: var(--dark);
+    color: white;
+    transition: transform 0.2s;
+    cursor: pointer;
+    border: black;
+    text-transform: uppercase;
+  }
+
+  .toolbar-button:hover {
+    transform: scale(1.1);
+  }
+
+  .start-numbers {
+    font-size: 1.5rem;
+    display: flex;
+    list-style: none;
+    justify-content: center;
+    margin-top: 10px;
+    margin-bottom: 40px;
+  }
+
+  .start-number {
+    padding: 10px;
+    margin-left: 15px;
+    margin-right: 15px;
+    text-align: center;
+    color: white;
+    border-width: 3px;
+    border-bottom: solid;
+    border-color: var(--primary);
+  }
+
+  .goal {
+    font-size: 1.5rem;
+    color: white;
+    margin-top: 25px;
+    margin-bottom: 40px;
+    text-align: center;
+    color: white;
+  }
+
+  .difficulty {
+    font-size: 1.5rem;
+    color: white;
+    margin-top: 25px;
+    margin-bottom: 55px;
+    justify-content: center;
+    display: flex;
+  }
+
+  .difficulty-cell {
+    padding: 5px;
+    margin-left: 5px;
+    border-radius: 2rem;
+    background-color: white;
+  }
+
+  .guess-form {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: center;
+  }
+
+  .guess-field {
+    background-color: white;
+    border: black;
+    font-size: 1rem;
+    border-radius: 2rem;
+    font-size: 28px;
+    text-align: center;
+    padding: 5px;
+    width: 70%;
+    margin-right: 5px;
+  }
+
+  .guess-button {
+    font-size: 1rem;
+    border-radius: 2rem;
+    padding: 10px;
+    text-align: center;
+    background-color: var(--primary);
+    color: white;
+    border: black;
+    transition: transform 0.2s;
+    cursor: pointer;
+    text-transform: uppercase;
+  }
+
+  .answer-message {
+    margin-top: 25px;
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    text-align: center;
+    color: white;
+  }
+</style>
+
+<script>
+
+  // TODO: Opti JS
+  // TODO: Opti CSS / HTML dont classes
+
+  // -------------------------- START FUNCTIONS --------------------------
+
+  function isInteger(number) {
+    return number % 1 === 0;
+  }
+
+  function reloadPage(number) {
+    location.reload()
+  }
+
+  function resetGuessField() {
+    document.getElementById("guess").value = "";
+  }
+
+  function isPropositionValid(proposition, startNumbers) {
+    for (let i = 0; i < startNumbers.length; i++) {
+      if (proposition.indexOf(startNumbers[i]) === -1) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  function filterMathOnly(inputString) {
+    const mathExpressionRegex = /^[\d+\-*/().\s]+$/;
+    if (mathExpressionRegex.test(inputString)) return inputString;
+    return "";
+  }
+
+  function getRdmIntBound(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
+  function suffleList(list) {
+    for (i = 1; i <= 20; i++) {
+      index1 = getRdmIntBound(0, list.length - 1);
+      index2 = getRdmIntBound(0, list.length - 1);
+      let temp = list[index1];
+      list[index1] = list[index2];
+      list[index2] = temp;
+    }
+    return list;
+  }
+
+  function getStringScore() {
+    if (localStorage.getItem("CEBScore")) return localStorage.getItem("CEBScore");
+    return "0";
+  }
+
+  function incrementScore() {
+    let newScore = 1;
+    if (localStorage.getItem("CEBScore")) {
+      newScore += parseInt(localStorage.getItem("CEBScore"));
+    }
+    localStorage.setItem("CEBScore", JSON.stringify(newScore));
+  }
+
+  function makeAGuess(startNumbers, goal) {
+    const proposition = document.getElementById("guess").value;
+    let msg = "Proposition non valide.";
+    if (isPropositionValid(proposition, startNumbers)) {
+      const guess = eval(filterMathOnly(proposition));
+      msg = "Non ! Essaie encore !";
+      if (guess == goal) {
+        msg = "C\'est la bonne réponse !";
+        incrementScore();
+        // setTimeout(() => {
+        //   reloadPage()
+        // }, 3000);
+      }
+    }
+    document.getElementById("answer-message").innerHTML = msg;
+  }
+
+  // -------------------------- END FUNCTIONS --------------------------
+
+  // let possibleOperators = ["+", "-", "*", "/"];
+  let possibleOperators = ["+", "-", "*"];
+  let startNumbers = [];
+  let operators = [];
+  let calc = "";
+  let goal = null;
+
+  // while (!isInteger(goal)) {
+
+  // PICK START NUMBERS
+  startNumbers[0] = getRdmIntBound(6, 10);
+  startNumbers[1] = getRdmIntBound(5, 10);
+  startNumbers[2] = getRdmIntBound(5, 10);
+  startNumbers[3] = getRdmIntBound(2, 5);
+  startNumbers = suffleList(startNumbers);
+
+  // PICK OPERATORS
+  for (let i = 0; i < 3; i++) {
+    const randomIndex = Math.floor(Math.random() * possibleOperators.length);
+    operators.push(possibleOperators[randomIndex]);
+  }
+
+  // COMPUTE GOAL
+  calc = JSON.stringify(startNumbers[0]) + operators[0] + JSON.stringify(startNumbers[1]) + operators[1] + JSON.stringify(startNumbers[2]) + operators[2] + JSON.stringify(startNumbers[3]);
+  console.log("Réponse: " + calc);
+  goal = eval(filterMathOnly(calc));
+  // }
+
+  // DISPLAY OF START NUMBERS
+  startNumbers = suffleList(startNumbers);
+  const startNumbersElement = document.getElementById("start-numbers");
+  startNumbers.forEach((number) => {
+    const startNumberElement = document.createElement("li");
+    startNumberElement.className = "start-number";
+    startNumberElement.innerHTML = number;
+    startNumbersElement.appendChild(startNumberElement);
+  });
+
+  // DISPLAY GOAL
+  const goalElement = document.getElementById("goal");
+  goalElement.innerHTML = "Demandé: " + JSON.stringify(goal);
+
+  // DISPLAY DIFFICULTY
+  let allNumberAdded = 0;
+  startNumbers.forEach((number) => allNumberAdded += number)
+  if (allNumberAdded > 22) document.getElementById("difficulty-cell-1").style.backgroundColor = "var(--primary)";
+  if (allNumberAdded > 26) document.getElementById("difficulty-cell-2").style.backgroundColor = "var(--primary)";
+  if (allNumberAdded > 30) document.getElementById("difficulty-cell-3").style.backgroundColor = "var(--primary)";
+
+  // DISPLAY SCORE
+  const scoreElement = document.getElementById("score");
+  scoreElement.innerHTML = getStringScore();
+
+</script>
